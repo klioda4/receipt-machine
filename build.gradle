@@ -37,6 +37,8 @@ task downloadExample(type: FileDownloadTask) {
     destinationDirectory = "${buildDir}/example/"
 }
 
+build.dependsOn downloadExample
+
 class FileDownloadTask extends DefaultTask {
     @Input
     String[] urls
