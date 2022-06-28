@@ -32,6 +32,31 @@ war {
     enabled true
 }
 
-//test {
-//    useJUnitPlatform()
-//}
+task downloadExample(type: FileDownloadTask) {
+    urls = ["https://github.com/klioda4/receipt-machine/raw/images-gradle-task/example_receipt.png"]
+    destinationDirectory = "${buildDir}/example/"
+}
+
+class FileDownloadTask extends DefaultTask {
+    @Input
+    String[] urls
+    @Input
+    String destinationDirectory
+
+    @TaskAction
+    def download() {
+        try {
+            File destination = new File(destinationDirectory)
+            if (!destination.exists()) {
+                destination.mkdirs()
+            }
+
+            for (i in 0..<urls.length) {
+                ant.get(src: urls[i], dest: destinationDirectory)
+            }
+        } catch (Exception e) {
+            println "Can't download file"
+            println e
+        }
+    }
+}
