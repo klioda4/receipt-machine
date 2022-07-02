@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.io;
+package ru.clevertec.kli.receiptmachine.util.io.print;
 
 import java.io.PrintWriter;
 import java.time.format.DateTimeFormatter;

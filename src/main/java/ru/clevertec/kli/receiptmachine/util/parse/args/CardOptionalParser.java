@@ -1,11 +1,11 @@
-package ru.clevertec.kli.receiptmachine.util.parse;
+package ru.clevertec.kli.receiptmachine.util.parse.args;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.CardDto;
 
 @Component
-public class CardParser implements Parsable<CardDto> {
+public class CardOptionalParser implements OptionalParser<CardDto> {
 
     private static final String START_STRING = "card-";
 

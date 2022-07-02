@@ -14,6 +14,5 @@ public class ProductDto {
     private String name;
     private boolean promotional;
     private BigDecimal price;
-
-//    private List<ReceiptPosition> positions;
+    private int count;
 }
