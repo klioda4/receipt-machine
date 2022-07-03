@@ -6,11 +6,15 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.exception.ValidationException;
 import ru.clevertec.kli.receiptmachine.util.parse.Parser;
 
 @RequiredArgsConstructor
 public class ObjectReader<T> {
+
+    private static final Logger logger = LogManager.getLogger(ObjectReader.class);
 
     private final BufferedReader reader;
     private final PrintWriter errorWriter;
@@ -25,7 +29,7 @@ public class ObjectReader<T> {
                 T item = parser.parse(line);
                 list.add(item);
             } catch (ValidationException e) {
-                System.out.println("Validation failed: " + line);
+                logger.debug("Writing invalid line to error writer.");
                 errorWriter.println(line);
             }
         }

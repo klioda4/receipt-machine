@@ -9,10 +9,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.util.parse.Parser;
 
 @RequiredArgsConstructor
 public class FileObjectReader<T> {
+
+    private static final Logger logger = LogManager.getLogger(FileObjectReader.class);
 
     private final String inputFilename;
     private final String invalidDataFilename;
@@ -23,8 +27,9 @@ public class FileObjectReader<T> {
         createDirectoryIfNotExists(invalidDataFilename);
         try (InputStream stream = this.getClass().getResourceAsStream('/' + inputFilename)) {
             if (stream == null) {
-                throw new IOException("Can't make stream of file " + inputFilename + " of "
-                    + "classpath");
+                String message = "Can't open file " + inputFilename + " from classpath";
+                logger.error(message);
+                throw new IOException(message);
             }
 
             try (var reader = new BufferedReader(
