@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.io;
+package ru.clevertec.kli.receiptmachine.util.io.print;
 
 import ru.clevertec.kli.receiptmachine.pojo.dto.ReceiptDto;
 

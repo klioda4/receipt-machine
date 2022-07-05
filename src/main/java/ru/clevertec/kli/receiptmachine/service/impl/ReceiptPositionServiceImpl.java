@@ -21,24 +21,28 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
     private final ProductService productService;
     private final ModelMapperExt mapper;
 
-    @Override public void add(ReceiptPosition position) {
+    @Override
+    public void add(ReceiptPosition position) {
         position.setId(new Random().nextInt(10000));
         repository.add(position);
     }
 
-    @Override public void addAll(List<ReceiptPosition> positions) {
+    @Override
+    public void addAll(List<ReceiptPosition> positions) {
         for (ReceiptPosition position : positions) {
             add(position);
         }
     }
 
-    @Override public List<ReceiptPosition> getByReceiptId(int receiptId) {
+    @Override
+    public List<ReceiptPosition> getByReceiptId(int receiptId) {
         return repository.getAll().stream()
             .filter(item -> item.getReceiptId() == receiptId)
             .collect(Collectors.toList());
     }
 
-    @Override public List<ReceiptPositionDto> getDtosByReceiptId(int receiptId) {
+    @Override
+    public List<ReceiptPositionDto> getDtosByReceiptId(int receiptId) {
         List<ReceiptPosition> positions = getByReceiptId(receiptId);
         List<ReceiptPositionDto> positionDtos = mapper.mapList(positions, ReceiptPositionDto.class);
         for (int i = 0; i < positionDtos.size(); i++) {

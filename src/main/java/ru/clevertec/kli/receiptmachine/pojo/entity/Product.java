@@ -1,7 +1,6 @@
 package ru.clevertec.kli.receiptmachine.pojo.entity;
 
 import java.math.BigDecimal;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +16,7 @@ public class Product implements Entity<Integer> {
     private String name;
     private boolean promotional;
     private BigDecimal price;
+    private int count;
 
     @Override
     public Integer getId() {

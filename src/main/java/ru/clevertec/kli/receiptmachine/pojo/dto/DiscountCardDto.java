@@ -11,6 +11,4 @@ public class DiscountCardDto {
 
     private int number;
     private float discount;
-
-//    private List<Receipt> receipts;
 }
