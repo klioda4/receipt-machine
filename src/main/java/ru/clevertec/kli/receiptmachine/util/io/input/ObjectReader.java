@@ -29,7 +29,7 @@ public class ObjectReader<T> {
                 T item = parser.parse(line);
                 list.add(item);
             } catch (ValidationException e) {
-                logger.debug("Writing invalid line to error writer.");
+                logger.trace("Writing invalid line to error writer.");
                 errorWriter.println(line);
             }
         }

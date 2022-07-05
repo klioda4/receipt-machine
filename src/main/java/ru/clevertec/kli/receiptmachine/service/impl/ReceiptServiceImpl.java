@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import ru.clevertec.kli.receiptmachine.exception.InvalidInputStringException;
+import ru.clevertec.kli.receiptmachine.exception.NotEnoughLeftoverException;
 import ru.clevertec.kli.receiptmachine.pojo.dto.DiscountCardDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.ProductDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.ReceiptDto;
@@ -20,6 +21,7 @@ import ru.clevertec.kli.receiptmachine.pojo.entity.Receipt;
 import ru.clevertec.kli.receiptmachine.pojo.entity.ReceiptPosition;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.service.DiscountCardService;
+import ru.clevertec.kli.receiptmachine.service.ProductInnerService;
 import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptService;
@@ -36,6 +38,7 @@ public class ReceiptServiceImpl implements ReceiptService {
 
     private final Repository<Receipt> repository;
     private final ProductService productService;
+    private final ProductInnerService productInnerService;
     private final DiscountCardService discountCardService;
     private final ReceiptPositionService receiptPositionService;
 
@@ -43,12 +46,14 @@ public class ReceiptServiceImpl implements ReceiptService {
     private final ReceiptWriter fileWriter;
     private final ObjectProvider<ParseCartHelper> parseHelperProvider;
 
-    @Override public ReceiptDto get(int id) throws NoSuchElementException {
+    @Override
+    public ReceiptDto get(int id) throws NoSuchElementException {
         Receipt receipt = repository.get(id);
         return convertToDto(receipt);
     }
 
-    @Override public List<ReceiptDto> getAll() {
+    @Override
+    public List<ReceiptDto> getAll() {
         List<Receipt> receipts = repository.getAll();
         List<ReceiptDto> receiptDtos = new ArrayList<>();
         for (Receipt receipt : receipts) {
@@ -59,11 +64,13 @@ public class ReceiptServiceImpl implements ReceiptService {
         return receiptDtos;
     }
 
-    @Override public ReceiptDto add(List<PurchaseDto> purchaseDtos, CardDto card)
+    @Override
+    public ReceiptDto add(List<PurchaseDto> purchaseDtos, CardDto card)
         throws NoSuchElementException {
 
         List<ReceiptPosition> receiptPositions = mapper.mapList(purchaseDtos,
             ReceiptPosition.class);
+        writeOffProductsAndSetQuantityIfNotEnough(receiptPositions);
         calculatePositions(receiptPositions);
 
         Receipt newReceipt = new Receipt();
@@ -83,7 +90,8 @@ public class ReceiptServiceImpl implements ReceiptService {
         return receiptDtos;
     }
 
-    @Override public ReceiptDto add(String[] receiptArgs) throws InvalidInputStringException {
+    @Override
+    public ReceiptDto add(String[] receiptArgs) throws InvalidInputStringException {
         if (receiptArgs == null || receiptArgs.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -153,5 +161,27 @@ public class ReceiptServiceImpl implements ReceiptService {
         ReceiptDto receiptDto = mapper.map(receipt, ReceiptDto.class);
         receiptDto.setPositions(receiptPositionService.getDtosByReceiptId(receipt.getId()));
         return receiptDto;
+    }
+
+    private void writeOffProductsAndSetQuantityIfNotEnough(List<ReceiptPosition> positions) {
+        for (ReceiptPosition position : positions) {
+            int productId = position.getProductId();
+            int quantity = position.getQuantity();
+            try {
+                productInnerService.writeOff(productId, quantity);
+            } catch (NotEnoughLeftoverException e) {
+                int newQuantity = e.getAvailableQuantity();
+                position.setQuantity(newQuantity);
+                doTrustedProductWriteOff(productId, newQuantity);
+            }
+        }
+    }
+
+    private void doTrustedProductWriteOff(int productId, int number) {
+        try {
+            productInnerService.writeOff(productId, number);
+        } catch (NotEnoughLeftoverException ex) {
+            throw new RuntimeException("This shouldn't happen");
+        }
     }
 }
