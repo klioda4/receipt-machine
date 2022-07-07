@@ -37,6 +37,10 @@ public class AppConfig {
     private String productsInputFilename;
     @Value("${cards.input.filename}")
     private String cardsInputFilename;
+    @Value("${calc.countOfPromotionalProductsToGetDiscount}")
+    private int countOfPromotionalProductsToGetDiscount;
+    @Value("${calc.promotionalProductDiscountPercent}")
+    private float promotionalProductDiscountPercent;
 
     @Bean
     public ModelMapperExt modelMapper() {
@@ -73,6 +77,16 @@ public class AppConfig {
         OptionalParser<CardDto> cardParser) {
 
         return new ParseCartHelper(purchaseParser, cardParser);
+    }
+
+    @Bean
+    public int countOfPromotionalProductsToGetDiscount() {
+        return countOfPromotionalProductsToGetDiscount;
+    }
+
+    @Bean
+    public float promotionalProductDiscountPercent() {
+        return promotionalProductDiscountPercent;
     }
 
     private FileObjectReader<DiscountCard> discountCardFileObjectReader() {

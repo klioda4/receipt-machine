@@ -15,6 +15,7 @@ import ru.clevertec.kli.receiptmachine.exception.NotEnoughLeftoverException;
 import ru.clevertec.kli.receiptmachine.pojo.dto.DiscountCardDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.ProductDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.ReceiptDto;
+import ru.clevertec.kli.receiptmachine.pojo.dto.ReceiptPositionDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.CardDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.PurchaseDto;
 import ru.clevertec.kli.receiptmachine.pojo.entity.Receipt;
@@ -33,9 +34,6 @@ import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
 @RequiredArgsConstructor
 public class ReceiptServiceImpl implements ReceiptService {
 
-    private static final int COUNT_OF_PROMOTIONAL_PRODUCTS_TO_GET_DISCOUNT = 5;
-    private static final float PROMOTIONAL_PRODUCT_DISCOUNT_PERCENT = 10;
-
     private final Repository<Receipt> repository;
     private final ProductService productService;
     private final ProductInnerService productInnerService;
@@ -45,6 +43,9 @@ public class ReceiptServiceImpl implements ReceiptService {
     private final ModelMapperExt mapper;
     private final ReceiptWriter fileWriter;
     private final ObjectProvider<ParseCartHelper> parseHelperProvider;
+
+    private final int countOfPromotionalProductsToGetDiscount;
+    private final float promotionalProductDiscountPercent;
 
     @Override
     public ReceiptDto get(int id) throws NoSuchElementException {
@@ -57,9 +58,11 @@ public class ReceiptServiceImpl implements ReceiptService {
         List<Receipt> receipts = repository.getAll();
         List<ReceiptDto> receiptDtos = new ArrayList<>();
         for (Receipt receipt : receipts) {
-            List<ReceiptPosition> positions = receiptPositionService.getByReceiptId(
+            List<ReceiptPositionDto> positions = receiptPositionService.getDtosByReceiptId(
                 receipt.getId());
-            receiptDtos.add(convertToDto(receipt));
+            ReceiptDto receiptDto = convertToDto(receipt);
+            receiptDto.setPositions(positions);
+            receiptDtos.add(receiptDto);
         }
         return receiptDtos;
     }
@@ -85,9 +88,9 @@ public class ReceiptServiceImpl implements ReceiptService {
         calculateReceipt(newReceipt, receiptPositions, discountCard);
 
         saveToRepositories(newReceipt, receiptPositions);
-        ReceiptDto receiptDtos = convertToDto(newReceipt);
-        fileWriter.write(receiptDtos);
-        return receiptDtos;
+        ReceiptDto receiptDto = convertToDto(newReceipt);
+        fileWriter.write(receiptDto);
+        return receiptDto;
     }
 
     @Override
@@ -116,11 +119,11 @@ public class ReceiptServiceImpl implements ReceiptService {
 
             BigDecimal valueWithDiscount = position.getValueWithoutDiscount();
             if (product.isPromotional()
-                && (position.getQuantity() > COUNT_OF_PROMOTIONAL_PRODUCTS_TO_GET_DISCOUNT)) {
+                && (position.getQuantity() >= countOfPromotionalProductsToGetDiscount)) {
 
-                position.setProductDiscountPercent(PROMOTIONAL_PRODUCT_DISCOUNT_PERCENT);
+                position.setProductDiscountPercent(promotionalProductDiscountPercent);
                 valueWithDiscount = valueWithDiscount
-                    .multiply(getDiscountMultiplier(PROMOTIONAL_PRODUCT_DISCOUNT_PERCENT))
+                    .multiply(getDiscountMultiplier(promotionalProductDiscountPercent))
                     .setScale(2, RoundingMode.HALF_EVEN);
             }
 
