@@ -12,9 +12,11 @@ import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
+import ru.clevertec.kli.receiptmachine.util.spring.aop.annotation.CallsLog;
 
 @Service
 @RequiredArgsConstructor
+@CallsLog
 public class ReceiptPositionServiceImpl implements ReceiptPositionService {
 
     private final Repository<ReceiptPosition> repository;

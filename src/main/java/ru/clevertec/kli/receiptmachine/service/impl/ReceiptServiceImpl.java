@@ -29,9 +29,11 @@ import ru.clevertec.kli.receiptmachine.service.ReceiptService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.io.print.ReceiptWriter;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
+import ru.clevertec.kli.receiptmachine.util.spring.aop.annotation.CallsLog;
 
 @Service
 @RequiredArgsConstructor
+@CallsLog
 public class ReceiptServiceImpl implements ReceiptService {
 
     private final Repository<Receipt> repository;
