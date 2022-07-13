@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.setting;
+package ru.clevertec.kli.receiptmachine.test.setting;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

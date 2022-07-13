@@ -3,6 +3,7 @@ package ru.clevertec.kli.receiptmachine.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ public class ProductServiceImplTest {
     @Test
     void whenRequestItem_thenReturnIt() {
         int id = 1;
-        when(repository.get(id)).thenReturn(products.get(id - 1));
+        when(repository.get(id)).thenReturn(products.get(0));
 
         ProductDto product = testingService.get(id);
 
@@ -59,12 +60,22 @@ public class ProductServiceImplTest {
     @Test
     void whenRequestForWriteOff_thenReduceQuantity() throws NotEnoughLeftoverException {
         int id = 1;
-        Product product = products.get(id - 1);
+        Product product = products.get(0);
         when(repository.get(id)).thenReturn(product);
 
         testingService.writeOff(id, 1);
 
         assertThat(product.getCount(), is(0));
+    }
+
+    @Test
+    void whenRequestForWriteOffTooMany_thenThrowException() {
+        int id = 1;
+        Product product = products.get(0);
+        when(repository.get(id)).thenReturn(product);
+
+        Assertions.assertThrows(NotEnoughLeftoverException.class,
+            () -> testingService.writeOff(id, 10));
     }
 
     private List<Product> makeProductList() {

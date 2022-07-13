@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.clevertec.kli.receiptmachine.exception.InvalidInputStringException;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.CardDto;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.PurchaseDto;
-import ru.clevertec.kli.receiptmachine.setting.TestConfig;
+import ru.clevertec.kli.receiptmachine.test.setting.TestConfig;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

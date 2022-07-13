@@ -21,8 +21,6 @@ public class FileRepository<T extends Entity<?>> extends LocalRepository<T> {
         logger.trace("Reading from giving source");
         List<T> items = reader.readAll();
         logger.debug("Done reading from giving source. Objects taken: " + items.size());
-        for (T item : items) {
-            add(item);
-        }
+        getItems().addAll(items);
     }
 }

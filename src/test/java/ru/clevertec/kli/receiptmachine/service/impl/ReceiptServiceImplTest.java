@@ -28,7 +28,7 @@ import ru.clevertec.kli.receiptmachine.service.DiscountCardService;
 import ru.clevertec.kli.receiptmachine.service.ProductInnerService;
 import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
-import ru.clevertec.kli.receiptmachine.setting.TestConfig;
+import ru.clevertec.kli.receiptmachine.test.setting.TestConfig;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.io.print.ReceiptWriter;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
