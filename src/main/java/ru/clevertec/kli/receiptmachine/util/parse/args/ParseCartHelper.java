@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.parse;
+package ru.clevertec.kli.receiptmachine.util.parse.args;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import ru.clevertec.kli.receiptmachine.pojo.dto.request.PurchaseDto;
 @RequiredArgsConstructor
 public class ParseCartHelper {
 
-    private final Parsable<PurchaseDto> purchaseParser;
-    private final Parsable<CardDto> cardParser;
+    private final OptionalParser<PurchaseDto> purchaseParser;
+    private final OptionalParser<CardDto> cardParser;
 
     private final List<PurchaseDto> purchases = new ArrayList<>();
     private CardDto discountCard;

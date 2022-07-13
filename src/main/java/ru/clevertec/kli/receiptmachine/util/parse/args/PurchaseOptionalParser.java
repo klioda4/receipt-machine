@@ -1,11 +1,11 @@
-package ru.clevertec.kli.receiptmachine.util.parse;
+package ru.clevertec.kli.receiptmachine.util.parse.args;
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 import ru.clevertec.kli.receiptmachine.pojo.dto.request.PurchaseDto;
 
 @Component
-public class PurchaseParser implements Parsable<PurchaseDto> {
+public class PurchaseOptionalParser implements OptionalParser<PurchaseDto> {
 
     private static final int CORRECT_FIELDS_COUNT = 2;
 

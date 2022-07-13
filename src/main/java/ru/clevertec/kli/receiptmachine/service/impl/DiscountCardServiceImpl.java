@@ -17,11 +17,13 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     private final Repository<DiscountCard> repository;
     private final ModelMapperExt mapper;
 
-    @Override public List<DiscountCardDto> getAll() {
+    @Override
+    public List<DiscountCardDto> getAll() {
         return mapper.mapList(repository.getAll(), DiscountCardDto.class);
     }
 
-    @Override public DiscountCardDto get(int number) throws NoSuchElementException {
+    @Override
+    public DiscountCardDto get(int number) throws NoSuchElementException {
         return mapper.map(repository.get(number), DiscountCardDto.class);
     }
 }
