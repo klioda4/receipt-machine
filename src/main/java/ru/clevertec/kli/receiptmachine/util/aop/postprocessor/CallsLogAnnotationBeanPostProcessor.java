@@ -1,6 +1,8 @@
 package ru.clevertec.kli.receiptmachine.util.aop.postprocessor;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,9 @@ public class CallsLogAnnotationBeanPostProcessor implements BeanPostProcessor {
         throws BeansException {
 
         Class<?> beanClass = bean.getClass();
-        if (beanClass.getAnnotation(CallsLog.class) != null) {
+        if (beanClass.isAnnotationPresent(CallsLog.class)
+            || isAnnotationPresentOnAnyMethod(beanClass, CallsLog.class)) {
+
             involvedBeans.put(beanName, beanClass);
         }
         return bean;
@@ -33,8 +37,20 @@ public class CallsLogAnnotationBeanPostProcessor implements BeanPostProcessor {
         if (originalClass == null) {
             return bean;
         }
-        var handler = new CallsLogProxyInvocationHandler(bean, new PrintWriter(System.out));
+        var handler = new CallsLogProxyInvocationHandler(bean, originalClass,
+            new PrintWriter(System.out));
         return Proxy.newProxyInstance(originalClass.getClassLoader(), originalClass.getInterfaces(),
             handler);
+    }
+
+    private static boolean isAnnotationPresentOnAnyMethod(Class<?> beanClass,
+        Class<? extends Annotation> annotationClass) {
+
+        for (Method method : beanClass.getMethods()) {
+            if (method.isAnnotationPresent(annotationClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

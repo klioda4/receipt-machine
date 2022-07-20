@@ -15,7 +15,6 @@ import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 
 @Service
 @RequiredArgsConstructor
-@CallsLog
 public class ProductServiceImpl implements ProductService, ProductInnerService {
 
     private final Repository<Product> repository;
@@ -32,6 +31,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     }
 
     @Override
+    @CallsLog
     public void writeOff(int id, int number) throws NotEnoughLeftoverException {
         if (number < 0) {
             throw new IllegalArgumentException("number can't be less than 0");

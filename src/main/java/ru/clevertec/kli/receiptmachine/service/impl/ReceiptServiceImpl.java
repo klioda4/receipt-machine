@@ -177,12 +177,12 @@ public class ReceiptServiceImpl implements ReceiptService {
             } catch (NotEnoughLeftoverException e) {
                 int newQuantity = e.getAvailableQuantity();
                 position.setQuantity(newQuantity);
-                doTrustedProductWriteOff(productId, newQuantity);
+                doTrustedWriteOffOfProduct(productId, newQuantity);
             }
         }
     }
 
-    private void doTrustedProductWriteOff(int productId, int number) {
+    private void doTrustedWriteOffOfProduct(int productId, int number) {
         try {
             productInnerService.writeOff(productId, number);
         } catch (NotEnoughLeftoverException ex) {

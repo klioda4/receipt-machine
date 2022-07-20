@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
 
@@ -14,6 +15,7 @@ import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSeri
 public class CallsLogProxyInvocationHandler implements InvocationHandler {
 
     private final Object originalObject;
+    private final Class<?> originalClass;
     private final PrintWriter logWriter;
     private final Gson gson = new GsonBuilder()
         .setPrettyPrinting()
@@ -22,6 +24,13 @@ public class CallsLogProxyInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (!originalClass.isAnnotationPresent(CallsLog.class)
+            && !method.isAnnotationPresent(CallsLog.class)
+            && !isAnnotationPresentOnMethodLike(method)) {
+
+            return method.invoke(originalObject, args);
+        }
+
         LocalDateTime dateTime = LocalDateTime.now();
         Object result = method.invoke(originalObject, args);
 
@@ -34,5 +43,16 @@ public class CallsLogProxyInvocationHandler implements InvocationHandler {
         logWriter.println(gson.toJson(logItem));
         logWriter.flush();
         return result;
+    }
+
+    private boolean isAnnotationPresentOnMethodLike(Method signatureExample) {
+        String methodName = signatureExample.getName();
+        Class<?>[] parameterTypes = signatureExample.getParameterTypes();
+        try {
+            Method methodToCheck = originalClass.getMethod(methodName, parameterTypes);
+            return methodToCheck.isAnnotationPresent(CallsLog.class);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Incorrect class or method was specified", e);
+        }
     }
 }
