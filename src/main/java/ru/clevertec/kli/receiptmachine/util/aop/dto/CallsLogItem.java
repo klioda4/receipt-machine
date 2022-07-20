@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.spring.aop.dto;
+package ru.clevertec.kli.receiptmachine.util.aop.dto;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

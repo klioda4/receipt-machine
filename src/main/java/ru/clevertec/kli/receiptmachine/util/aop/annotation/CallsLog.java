@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.spring.aop.annotation;
+package ru.clevertec.kli.receiptmachine.util.aop.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

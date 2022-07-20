@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.spring.aop.handler;
+package ru.clevertec.kli.receiptmachine.util.aop.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,8 +7,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
-import ru.clevertec.kli.receiptmachine.util.spring.aop.dto.CallsLogItem;
 
 @RequiredArgsConstructor
 public class CallsLogProxyInvocationHandler implements InvocationHandler {

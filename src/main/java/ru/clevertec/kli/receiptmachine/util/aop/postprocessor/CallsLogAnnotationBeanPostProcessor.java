@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.spring.aop.postprocessor;
+package ru.clevertec.kli.receiptmachine.util.aop.postprocessor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import ru.clevertec.kli.receiptmachine.util.spring.aop.annotation.CallsLog;
-import ru.clevertec.kli.receiptmachine.util.spring.aop.handler.CallsLogProxyInvocationHandler;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
+import ru.clevertec.kli.receiptmachine.util.aop.handler.CallsLogProxyInvocationHandler;
 
 @RequiredArgsConstructor
 public class CallsLogAnnotationBeanPostProcessor implements BeanPostProcessor {
