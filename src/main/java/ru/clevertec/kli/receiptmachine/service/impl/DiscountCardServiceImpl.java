@@ -9,19 +9,23 @@ import ru.clevertec.kli.receiptmachine.pojo.entity.DiscountCard;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.service.DiscountCardService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 
 @Service
 @RequiredArgsConstructor
+@CallsLog
 public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final Repository<DiscountCard> repository;
     private final ModelMapperExt mapper;
 
-    @Override public List<DiscountCardDto> getAll() {
+    @Override
+    public List<DiscountCardDto> getAll() {
         return mapper.mapList(repository.getAll(), DiscountCardDto.class);
     }
 
-    @Override public DiscountCardDto get(int number) throws NoSuchElementException {
+    @Override
+    public DiscountCardDto get(int number) throws NoSuchElementException {
         return mapper.map(repository.get(number), DiscountCardDto.class);
     }
 }
