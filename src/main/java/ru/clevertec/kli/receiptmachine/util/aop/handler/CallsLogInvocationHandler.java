@@ -12,7 +12,7 @@ import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
 
 @RequiredArgsConstructor
-public class CallsLogProxyInvocationHandler implements InvocationHandler {
+public class CallsLogInvocationHandler implements InvocationHandler {
 
     private final Object originalObject;
     private final Class<?> originalClass;
