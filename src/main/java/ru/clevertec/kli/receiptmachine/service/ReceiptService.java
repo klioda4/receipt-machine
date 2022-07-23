@@ -17,4 +17,6 @@ public interface ReceiptService {
         throws NoSuchElementException;
 
     ReceiptDto add(String[] receiptArgs) throws InvalidInputStringException;
+
+    void delete(int id);
 }

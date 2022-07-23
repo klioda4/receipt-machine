@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
@@ -27,9 +26,9 @@ import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.io.print.ReceiptWriter;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
-import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 
 @Service
 @RequiredArgsConstructor
@@ -79,7 +78,6 @@ public class ReceiptServiceImpl implements ReceiptService {
         calculatePositions(receiptPositions);
 
         Receipt newReceipt = new Receipt();
-        newReceipt.setId(new Random().nextInt(10000));
         newReceipt.setTime(LocalDateTime.now());
 
         DiscountCardDto discountCard = null;
@@ -96,7 +94,9 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
-    public ReceiptDto add(String[] receiptArgs) throws InvalidInputStringException {
+    public ReceiptDto add(String[] receiptArgs)
+        throws InvalidInputStringException, NoSuchElementException {
+
         if (receiptArgs == null || receiptArgs.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -112,9 +112,20 @@ public class ReceiptServiceImpl implements ReceiptService {
         return add(purchases, discountCard);
     }
 
+    @Override
+    public void delete(int id) {
+        receiptPositionService.removeByReceiptId(id);
+        Receipt receipt = Receipt.builder()
+            .id(id)
+            .build();
+        repository.remove(receipt);
+    }
+
     private void calculatePositions(List<ReceiptPosition> positions) throws NoSuchElementException {
         for (ReceiptPosition position : positions) {
             ProductDto product = productService.get(position.getProductId());
+            position.setProductPrice(product.getPrice());
+
             BigDecimal valueWithoutDiscount = product.getPrice()
                 .multiply(BigDecimal.valueOf(position.getQuantity()));
             position.setValueWithoutDiscount(valueWithoutDiscount);
@@ -128,7 +139,6 @@ public class ReceiptServiceImpl implements ReceiptService {
                     .multiply(getDiscountMultiplier(promotionalProductDiscountPercent))
                     .setScale(2, RoundingMode.HALF_EVEN);
             }
-
             position.setValueWithDiscount(valueWithDiscount);
         }
     }
@@ -168,7 +178,9 @@ public class ReceiptServiceImpl implements ReceiptService {
         return receiptDto;
     }
 
-    private void writeOffProductsAndSetQuantityIfNotEnough(List<ReceiptPosition> positions) {
+    private void writeOffProductsAndSetQuantityIfNotEnough(List<ReceiptPosition> positions)
+        throws NoSuchElementException {
+
         for (ReceiptPosition position : positions) {
             int productId = position.getProductId();
             int quantity = position.getQuantity();

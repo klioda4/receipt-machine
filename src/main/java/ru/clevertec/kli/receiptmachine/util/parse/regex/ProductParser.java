@@ -34,7 +34,7 @@ public class ProductParser implements Parser<Product> {
         if (!matcher.matches()) {
             logger.debug("-\"" + item + "\" failed the Product pattern");
             throw new ValidationException("String \"" + item + "\" does not match the "
-                + "Product pattern", item, REGEX);
+                + "Product pattern", item);
         }
         logger.debug("+\"" + item + "\" passed the Product pattern");
 

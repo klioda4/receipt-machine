@@ -9,13 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DiscountCard implements Entity<Integer> {
+public class DiscountCard implements Entity {
 
     private int number;
     private float discount;
 
     @Override
-    public Integer getId() {
+    public int getId() {
         return number;
+    }
+
+    @Override
+    public void setId(int id) {
+        number = id;
     }
 }

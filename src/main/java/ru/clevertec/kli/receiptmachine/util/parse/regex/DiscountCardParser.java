@@ -29,7 +29,7 @@ public class DiscountCardParser implements Parser<DiscountCard> {
         if (!matcher.matches()) {
             logger.debug("-\"" + item + "\" failed the Discount card pattern");
             throw new ValidationException("String \"" + item + "\" does not match the "
-                + "Discount card pattern", item, REGEX);
+                + "Discount card pattern", item);
         }
         logger.debug("+\"" + item + "\" passed the Discount card pattern");
 

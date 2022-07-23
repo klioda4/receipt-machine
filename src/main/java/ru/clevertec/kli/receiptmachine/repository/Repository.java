@@ -7,9 +7,11 @@ public interface Repository<T> {
 
     void add(T item);
 
-    T get(Object id) throws NoSuchElementException;
+    T get(int id) throws NoSuchElementException;
 
     List<T> getAll();
+
+    void update(T item) throws NoSuchElementException;
 
     void remove(T item);
 }

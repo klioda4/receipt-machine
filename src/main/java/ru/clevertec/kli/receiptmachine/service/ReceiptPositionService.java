@@ -13,4 +13,6 @@ public interface ReceiptPositionService {
     List<ReceiptPosition> getByReceiptId(int receiptId);
 
     List<ReceiptPositionDto> getDtosByReceiptId(int receiptId);
+
+    void removeByReceiptId(int receiptId);
 }

@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
-import ru.clevertec.kli.receiptmachine.util.aop.helper.ProxyUtils;
+import ru.clevertec.kli.receiptmachine.util.aop.helper.AnnotationFinder;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
 
 public class CallsLogInvocationHandler implements InvocationHandler {
@@ -37,7 +37,7 @@ public class CallsLogInvocationHandler implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            Optional<CallsLog> optional = ProxyUtils.findAnnotation(method, originalClass,
+            Optional<CallsLog> optional = AnnotationFinder.findAnnotation(method, originalClass,
                 CallsLog.class);
             if (optional.isEmpty()) {
                 return method.invoke(originalObject, args);

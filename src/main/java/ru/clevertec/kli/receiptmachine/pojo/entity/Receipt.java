@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Receipt implements Entity<Integer> {
+public class Receipt implements Entity {
 
     private int id;
     private LocalDateTime time;
@@ -22,7 +22,12 @@ public class Receipt implements Entity<Integer> {
     private int discountCardNumber;
 
     @Override
-    public Integer getId() {
+    public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

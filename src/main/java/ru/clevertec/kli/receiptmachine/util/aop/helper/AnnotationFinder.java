@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-public class ProxyUtils {
+public class AnnotationFinder {
 
     public static <T extends Annotation> Optional<T> findAnnotation(Method method,
         Class<?> originalClass, Class<T> annotationClass) {
@@ -24,14 +24,14 @@ public class ProxyUtils {
     private static <T extends Annotation> Optional<T> getClassAnnotation(Class<?> originalClass,
         Class<T> annotationClass) {
 
-        return Optional.of(
+        return Optional.ofNullable(
             originalClass.getAnnotation(annotationClass));
     }
 
     private static <T extends Annotation> Optional<T> getInterfaceAnnotation(Method method,
         Class<T> annotationClass) {
 
-        return Optional.of(
+        return Optional.ofNullable(
             method.getAnnotation(annotationClass));
     }
 
@@ -42,7 +42,7 @@ public class ProxyUtils {
         Class<?>[] parameterTypes = signatureExample.getParameterTypes();
         try {
             Method methodToCheck = cl.getMethod(methodName, parameterTypes);
-            return Optional.of(
+            return Optional.ofNullable(
                 methodToCheck.getAnnotation(annotationClass));
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("Incorrect class or method was specified", e);

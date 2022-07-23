@@ -1,7 +1,6 @@
 package ru.clevertec.kli.receiptmachine.service.impl;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,15 +24,12 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
 
     @Override
     public void add(ReceiptPosition position) {
-        position.setId(new Random().nextInt(10000));
         repository.add(position);
     }
 
     @Override
     public void addAll(List<ReceiptPosition> positions) {
-        for (ReceiptPosition position : positions) {
-            add(position);
-        }
+        positions.forEach(this::add);
     }
 
     @Override
@@ -56,5 +52,12 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
                 .setProductPrice(product.getPrice());
         }
         return positionDtos;
+    }
+
+    @Override
+    @Transactional
+    public void removeByReceiptId(int receiptId) {
+        List<ReceiptPosition> positions = getByReceiptId(receiptId);
+        positions.forEach(repository::remove);
     }
 }

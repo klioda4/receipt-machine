@@ -8,7 +8,7 @@ import ru.clevertec.kli.receiptmachine.pojo.entity.Entity;
 import ru.clevertec.kli.receiptmachine.repository.impl.LocalRepository;
 import ru.clevertec.kli.receiptmachine.util.io.input.FileObjectReader;
 
-public class FileRepository<T extends Entity<?>> extends LocalRepository<T> {
+public class FileRepository<T extends Entity> extends LocalRepository<T> {
 
     private static final Logger logger = LogManager.getLogger(FileRepository.class);
 

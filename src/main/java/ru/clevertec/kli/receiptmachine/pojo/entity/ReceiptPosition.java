@@ -5,16 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 /**
- *  Represents one position (line) of a receipt
+ * Represents one position (line) of a receipt
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReceiptPosition implements Entity<Integer> {
+public class ReceiptPosition implements Entity {
 
     private int id;
     private int quantity;
@@ -27,7 +26,12 @@ public class ReceiptPosition implements Entity<Integer> {
     private int receiptId;
 
     @Override
-    public Integer getId() {
+    public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

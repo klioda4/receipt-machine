@@ -45,19 +45,10 @@ public class ReceiptPositionServiceImplTest {
     }
 
     @Test
-    void whenAdd_thenSetId() {
-        ReceiptPosition position = makeReceiptPosition();
-
-        testingService.add(position);
-
-        assertThat(position.getId(), is(not(0)));
-    }
-
-    @Test
     void whenAddAll_thenAddAllItemsToRepository() {
         List<ReceiptPosition> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            list.add(makeReceiptPosition());
+        for (int i = 1; i <= 3; i++) {
+            list.add(makeReceiptPosition(i));
         }
 
         testingService.addAll(list);
@@ -65,18 +56,6 @@ public class ReceiptPositionServiceImplTest {
         for (ReceiptPosition item : list) {
             verify(repository).add(item);
         }
-    }
-
-    @Test
-    void whenAddAll_thenSetIdForAllItems() {
-        List<ReceiptPosition> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            list.add(makeReceiptPosition());
-        }
-
-        testingService.addAll(list);
-
-        assertThat(list, not(hasItem(hasProperty("id", is(0)))));
     }
 
     @Test

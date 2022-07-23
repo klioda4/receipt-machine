@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product implements Entity<Integer> {
+public class Product implements Entity {
 
     private int id;
     private String name;
@@ -19,7 +19,12 @@ public class Product implements Entity<Integer> {
     private int count;
 
     @Override
-    public Integer getId() {
+    public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }
