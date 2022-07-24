@@ -9,7 +9,7 @@ import ru.clevertec.kli.receiptmachine.util.aop.handler.CallsLogInvocationHandle
 public class CallsLogAnnotationBeanPostProcessor extends ProxyBeanPostProcessor {
 
     private static final BiFunction<Object, Class<?>, InvocationHandler> HANDLER_MAKER =
-        (object, beanClass) -> new CallsLogInvocationHandler(object, beanClass,
+        (bean, beanClass) -> new CallsLogInvocationHandler(bean, beanClass,
             new PrintWriter(System.out));
 
     public CallsLogAnnotationBeanPostProcessor() {

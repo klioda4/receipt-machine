@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -24,25 +25,29 @@ public class CallsLogInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (!originalClass.isAnnotationPresent(CallsLog.class)
-            && !method.isAnnotationPresent(CallsLog.class)
-            && !isAnnotationPresentOnMethodLike(method)) {
+        try {
+            if (!originalClass.isAnnotationPresent(CallsLog.class)
+                && !method.isAnnotationPresent(CallsLog.class)
+                && !isAnnotationPresentOnMethodLike(method)) {
 
-            return method.invoke(originalObject, args);
+                return method.invoke(originalObject, args);
+            }
+
+            LocalDateTime dateTime = LocalDateTime.now();
+            Object result = method.invoke(originalObject, args);
+
+            CallsLogItem logItem = CallsLogItem.builder()
+                .methodName(originalObject.getClass().getSimpleName() + '.' + method.getName())
+                .callTime(dateTime)
+                .arguments(args)
+                .methodResult(result)
+                .build();
+            logWriter.println(gson.toJson(logItem));
+            logWriter.flush();
+            return result;
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
         }
-
-        LocalDateTime dateTime = LocalDateTime.now();
-        Object result = method.invoke(originalObject, args);
-
-        CallsLogItem logItem = CallsLogItem.builder()
-            .methodName(originalObject.getClass().getSimpleName() + '.' + method.getName())
-            .callTime(dateTime)
-            .arguments(args)
-            .methodResult(result)
-            .build();
-        logWriter.println(gson.toJson(logItem));
-        logWriter.flush();
-        return result;
     }
 
     private boolean isAnnotationPresentOnMethodLike(Method signatureExample) {
