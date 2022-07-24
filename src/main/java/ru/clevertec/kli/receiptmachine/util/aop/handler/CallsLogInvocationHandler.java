@@ -2,34 +2,44 @@ package ru.clevertec.kli.receiptmachine.util.aop.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
+import ru.clevertec.kli.receiptmachine.util.aop.helper.ProxyUtils;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
 
-@RequiredArgsConstructor
 public class CallsLogInvocationHandler implements InvocationHandler {
 
     private final Object originalObject;
     private final Class<?> originalClass;
-    private final PrintWriter logWriter;
-    private final Gson gson = new GsonBuilder()
-        .setPrettyPrinting()
-        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeGsonSerializer())
-        .create();
+
+    private final Logger logger;
+    private final Gson gson;
+
+    public CallsLogInvocationHandler(Object originalObject, Class<?> originalClass) {
+        this.originalObject = originalObject;
+        this.originalClass = originalClass;
+        logger = LogManager.getLogger(originalClass);
+        gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeGsonSerializer())
+            .create();
+    }
+
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         try {
-            if (!originalClass.isAnnotationPresent(CallsLog.class)
-                && !method.isAnnotationPresent(CallsLog.class)
-                && !isAnnotationPresentOnMethodLike(method)) {
-
+            Optional<CallsLog> optional = ProxyUtils.findAnnotation(method, originalClass,
+                CallsLog.class);
+            if (optional.isEmpty()) {
                 return method.invoke(originalObject, args);
             }
 
@@ -42,22 +52,33 @@ public class CallsLogInvocationHandler implements InvocationHandler {
                 .arguments(args)
                 .methodResult(result)
                 .build();
-            logWriter.println(gson.toJson(logItem));
-            logWriter.flush();
+            CallsLog annotation = optional.get();
+            logger.log(toLog4gLevel(annotation.value()), gson.toJson(logItem));
+
             return result;
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
     }
 
-    private boolean isAnnotationPresentOnMethodLike(Method signatureExample) {
-        String methodName = signatureExample.getName();
-        Class<?>[] parameterTypes = signatureExample.getParameterTypes();
-        try {
-            Method methodToCheck = originalClass.getMethod(methodName, parameterTypes);
-            return methodToCheck.isAnnotationPresent(CallsLog.class);
-        } catch (NoSuchMethodException e) {
-            throw new IllegalArgumentException("Incorrect class or method was specified", e);
+    private org.apache.logging.log4j.Level toLog4gLevel(java.lang.System.Logger.Level level) {
+        switch (level) {
+            case OFF:
+                return Level.OFF;
+            case ERROR:
+                return Level.ERROR;
+            case WARNING:
+                return Level.WARN;
+            case INFO:
+                return Level.INFO;
+            case DEBUG:
+                return Level.DEBUG;
+            case TRACE:
+                return Level.TRACE;
+            case ALL:
+                return Level.ALL;
+            default:
+                throw new IllegalArgumentException();
         }
     }
 }
