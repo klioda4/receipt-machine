@@ -17,7 +17,7 @@ import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.repository.factory.RepositoryFactory;
 import ru.clevertec.kli.receiptmachine.repository.factory.impl.JdbcRepositoryFactory;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
-import ru.clevertec.kli.receiptmachine.util.database.datasource.DataSource;
+import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.DataSource;
 import ru.clevertec.kli.receiptmachine.util.parse.args.OptionalParser;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
 

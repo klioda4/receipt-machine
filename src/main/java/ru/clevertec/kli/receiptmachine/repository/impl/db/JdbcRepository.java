@@ -14,11 +14,13 @@ import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.exception.RepositoryException;
 import ru.clevertec.kli.receiptmachine.pojo.entity.Entity;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
-import ru.clevertec.kli.receiptmachine.util.database.datasource.DataSource;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
+import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.DataSource;
 import ru.clevertec.kli.receiptmachine.util.database.mapper.JdbcMapper;
 import ru.clevertec.kli.receiptmachine.util.database.query.Query;
 
 @RequiredArgsConstructor
+@Transactional
 public class JdbcRepository<T extends Entity> implements Repository<T> {
 
     private static final Logger logger = LogManager.getLogger(JdbcRepository.class);

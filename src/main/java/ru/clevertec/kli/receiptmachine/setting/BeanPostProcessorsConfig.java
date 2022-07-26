@@ -4,6 +4,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.clevertec.kli.receiptmachine.util.aop.postprocessor.CallsLogAnnotationBeanPostProcessor;
+import ru.clevertec.kli.receiptmachine.util.aop.postprocessor.TransactionalAnnotationBeanPostProcessor;
 
 @Configuration
 public class BeanPostProcessorsConfig {
@@ -11,5 +12,10 @@ public class BeanPostProcessorsConfig {
     @Bean
     public BeanPostProcessor callsLoggingAnnotationBeanPostProcessor() {
         return new CallsLogAnnotationBeanPostProcessor();
+    }
+
+    @Bean
+    public BeanPostProcessor transactionalAnnotationBeanPostProcessor() {
+        return new TransactionalAnnotationBeanPostProcessor();
     }
 }

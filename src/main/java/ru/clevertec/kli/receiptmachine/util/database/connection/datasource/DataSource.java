@@ -1,4 +1,4 @@
-package ru.clevertec.kli.receiptmachine.util.database.datasource;
+package ru.clevertec.kli.receiptmachine.util.database.connection.datasource;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
-import ru.clevertec.kli.receiptmachine.util.aop.dto.CallsLogItem;
+import ru.clevertec.kli.receiptmachine.util.aop.dto.CallLogItem;
 import ru.clevertec.kli.receiptmachine.util.aop.helper.AnnotationFinder;
 import ru.clevertec.kli.receiptmachine.util.serialize.gson.LocalDateTimeGsonSerializer;
 
@@ -46,7 +46,7 @@ public class CallsLogInvocationHandler implements InvocationHandler {
             LocalDateTime dateTime = LocalDateTime.now();
             Object result = method.invoke(originalObject, args);
 
-            CallsLogItem logItem = CallsLogItem.builder()
+            CallLogItem logItem = CallLogItem.builder()
                 .methodName(originalObject.getClass().getSimpleName() + '.' + method.getName())
                 .callTime(dateTime)
                 .arguments(args)

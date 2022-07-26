@@ -12,6 +12,7 @@ import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
     }
 
     @Override
+    @Transactional
     public void addAll(List<ReceiptPosition> positions) {
         positions.forEach(this::add);
     }
@@ -40,6 +42,7 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
     }
 
     @Override
+    @Transactional
     public List<ReceiptPositionDto> getDtosByReceiptId(int receiptId) {
         List<ReceiptPosition> positions = getByReceiptId(receiptId);
         List<ReceiptPositionDto> positionDtos = mapper.mapList(positions, ReceiptPositionDto.class);

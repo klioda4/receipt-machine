@@ -8,7 +8,7 @@ import ru.clevertec.kli.receiptmachine.pojo.entity.ReceiptPosition;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.repository.factory.RepositoryFactory;
 import ru.clevertec.kli.receiptmachine.repository.impl.db.JdbcRepository;
-import ru.clevertec.kli.receiptmachine.util.database.datasource.DataSource;
+import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.DataSource;
 import ru.clevertec.kli.receiptmachine.util.database.mapper.impl.DiscountCardJdbcMapper;
 import ru.clevertec.kli.receiptmachine.util.database.mapper.impl.ProductJdbcMapper;
 import ru.clevertec.kli.receiptmachine.util.database.mapper.impl.ReceiptJdbcMapper;

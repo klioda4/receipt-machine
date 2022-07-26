@@ -13,6 +13,7 @@ import ru.clevertec.kli.receiptmachine.service.ProductInnerService;
 import ru.clevertec.kli.receiptmachine.service.ProductService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
 import ru.clevertec.kli.receiptmachine.util.enums.PutResult;
 
 @Service
@@ -49,6 +50,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     }
 
     @Override
+    @Transactional
     public ProductDto update(int id, ProductUpdateDto updateDto) throws NoSuchElementException {
         Product product = repository.get(id);
         updateFields(product, updateDto);
@@ -57,6 +59,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     }
 
     @Override
+    @Transactional
     public PutResult put(ProductDto newItem) {
         Product newProduct = mapper.map(newItem, Product.class);
         try {
@@ -71,6 +74,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
 
     @Override
     @CallsLog
+    @Transactional
     public void writeOff(int id, int number)
         throws NotEnoughLeftoverException, NoSuchElementException {
 

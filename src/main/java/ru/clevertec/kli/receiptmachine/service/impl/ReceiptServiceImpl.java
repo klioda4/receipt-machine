@@ -27,6 +27,7 @@ import ru.clevertec.kli.receiptmachine.service.ReceiptPositionService;
 import ru.clevertec.kli.receiptmachine.service.ReceiptService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
 import ru.clevertec.kli.receiptmachine.util.io.print.ReceiptWriter;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
 
@@ -55,6 +56,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
+    @Transactional
     public List<ReceiptDto> getAll() {
         List<Receipt> receipts = repository.getAll();
         List<ReceiptDto> receiptDtos = new ArrayList<>();
@@ -69,6 +71,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
+    @Transactional
     public ReceiptDto add(List<PurchaseDto> purchaseDtos, CardDto card)
         throws NoSuchElementException {
 
@@ -94,6 +97,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
+    @Transactional
     public ReceiptDto add(String[] receiptArgs)
         throws InvalidInputStringException, NoSuchElementException {
 
@@ -113,6 +117,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         receiptPositionService.removeByReceiptId(id);
         Receipt receipt = Receipt.builder()

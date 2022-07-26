@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CallsLogItem {
+public class CallLogItem {
 
     private LocalDateTime callTime;
     private String methodName;

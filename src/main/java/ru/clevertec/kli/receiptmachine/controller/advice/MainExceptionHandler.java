@@ -29,7 +29,7 @@ public class MainExceptionHandler {
             + "to request later");
     }
 
-    @ExceptionHandler(RepositoryException.class)
+    @ExceptionHandler({RepositoryException.class, SQLException.class})
     public ResponseEntity<ExceptionResponse> handleRepositoryExceptions(RepositoryException e) {
         logger.error("Repository exception", e);
         return getResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, "Database problem, try to "

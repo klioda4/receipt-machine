@@ -14,12 +14,17 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public class ProxyBeanPostProcessor implements BeanPostProcessor {
 
     private final HashMap<String, Class<?>> involvedBeans = new HashMap<>();
+    private final Class<? extends Annotation> annotationClass;
 
     /**
      * Function to get invocation handler using bean instance and its original class
      */
-    private final BiFunction<Object, Class<?>, InvocationHandler> invocationHandlerGetter;
-    private final Class<? extends Annotation> annotationClass;
+    private BiFunction<Object, Class<?>, InvocationHandler> invocationHandlerProducer;
+
+    protected void setInvocationHandlerProducer(
+        BiFunction<Object, Class<?>, InvocationHandler> invocationHandlerProducer) {
+        this.invocationHandlerProducer = invocationHandlerProducer;
+    }
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -42,7 +47,7 @@ public class ProxyBeanPostProcessor implements BeanPostProcessor {
         if (originalClass == null) {
             return bean;
         }
-        InvocationHandler handler = invocationHandlerGetter.apply(bean, originalClass);
+        InvocationHandler handler = invocationHandlerProducer.apply(bean, originalClass);
         return Proxy.newProxyInstance(originalClass.getClassLoader(), originalClass.getInterfaces(),
             handler);
     }

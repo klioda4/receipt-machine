@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import ru.clevertec.kli.receiptmachine.util.database.datasource.DataSource;
-import ru.clevertec.kli.receiptmachine.util.database.datasource.impl.DataSourceImpl;
+import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.DataSource;
+import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.SimpleDataSource;
+import ru.clevertec.kli.receiptmachine.util.database.connection.pool.ConnectionPool;
+import ru.clevertec.kli.receiptmachine.util.database.connection.pool.impl.ConnectionPoolImpl;
+import ru.clevertec.kli.receiptmachine.util.database.transaction.impl.TransactionalDataSource;
 
 @Configuration
 @PropertySource("classpath:datasource.properties")
@@ -22,15 +25,23 @@ public class DatabaseConfig {
     @Value("${datasource.driver.class}")
     private String driverClassName;
 
-    @Bean
     public DataSource dataSource() {
-        findDriver(driverClassName);
+        loadDriverClass(driverClassName);
         Properties connectionInfo = getPropertiesOf(
             Map.of("user", user, "password", password));
-        return new DataSourceImpl(url, connectionInfo);
+        return new SimpleDataSource(url, connectionInfo);
     }
 
-    private void findDriver(String driverClassName) {
+    public ConnectionPool connectionPool() {
+        return new ConnectionPoolImpl(dataSource(), 5);
+    }
+
+    @Bean
+    public TransactionalDataSource transactionalDataSource() {
+        return new TransactionalDataSource(connectionPool());
+    }
+
+    private void loadDriverClass(String driverClassName) {
         try {
             Class.forName(driverClassName);
         } catch (ClassNotFoundException e) {
