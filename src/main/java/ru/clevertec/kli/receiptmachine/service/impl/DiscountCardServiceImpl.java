@@ -5,23 +5,77 @@ import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.clevertec.kli.receiptmachine.pojo.dto.DiscountCardDto;
+import ru.clevertec.kli.receiptmachine.pojo.dto.update.DiscountCardUpdateDto;
 import ru.clevertec.kli.receiptmachine.pojo.entity.DiscountCard;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.service.DiscountCardService;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
+import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
+import ru.clevertec.kli.receiptmachine.util.enums.PutResult;
+import ru.clevertec.kli.receiptmachine.util.validate.Validator;
 
 @Service
 @RequiredArgsConstructor
+@CallsLog
 public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final Repository<DiscountCard> repository;
     private final ModelMapperExt mapper;
+    private final Validator<DiscountCard> validator;
 
-    @Override public List<DiscountCardDto> getAll() {
+    @Override
+    public List<DiscountCardDto> getAll() {
         return mapper.mapList(repository.getAll(), DiscountCardDto.class);
     }
 
-    @Override public DiscountCardDto get(int number) throws NoSuchElementException {
+    @Override
+    public DiscountCardDto get(int number) throws NoSuchElementException {
         return mapper.map(repository.get(number), DiscountCardDto.class);
+    }
+
+    @Override
+    public DiscountCardDto add(DiscountCardDto discountCardDto) {
+        DiscountCard discountCard = mapper.map(discountCardDto, DiscountCard.class);
+        validator.validate(discountCard);
+        repository.add(discountCard);
+        return mapper.map(discountCard, DiscountCardDto.class);
+    }
+
+    @Override
+    @Transactional
+    public DiscountCardDto update(int number, DiscountCardUpdateDto updateDto)
+        throws NoSuchElementException {
+
+        DiscountCard card = repository.get(number);
+        if (updateDto.getDiscount() != null) {
+            card.setDiscount(updateDto.getDiscount());
+        }
+        validator.validate(card);
+        repository.update(card);
+        return mapper.map(card, DiscountCardDto.class);
+    }
+
+    @Override
+    @Transactional
+    public PutResult put(DiscountCardDto newItem) {
+        DiscountCard newCard = mapper.map(newItem, DiscountCard.class);
+        validator.validate(newCard);
+        try {
+            repository.get(newCard.getNumber());
+            repository.update(newCard);
+            return PutResult.UPDATED;
+        } catch (NoSuchElementException e) {
+            repository.add(newCard);
+            return PutResult.CREATED;
+        }
+    }
+
+    @Override
+    public void delete(int number) {
+        DiscountCard deleteCard = DiscountCard.builder()
+            .number(number)
+            .build();
+        repository.remove(deleteCard);
     }
 }

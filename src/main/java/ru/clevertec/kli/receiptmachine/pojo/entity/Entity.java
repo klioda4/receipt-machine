@@ -1,6 +1,8 @@
 package ru.clevertec.kli.receiptmachine.pojo.entity;
 
-public interface Entity<T> {
+public interface Entity {
 
-    T getId();
+    int getId();
+
+    void setId(int id);
 }
