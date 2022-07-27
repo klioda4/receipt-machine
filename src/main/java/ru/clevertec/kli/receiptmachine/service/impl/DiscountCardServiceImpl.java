@@ -13,6 +13,7 @@ import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
 import ru.clevertec.kli.receiptmachine.util.enums.PutResult;
+import ru.clevertec.kli.receiptmachine.util.validate.Validator;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
 
     private final Repository<DiscountCard> repository;
     private final ModelMapperExt mapper;
+    private final Validator<DiscountCard> validator;
 
     @Override
     public List<DiscountCardDto> getAll() {
@@ -35,6 +37,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     @Override
     public DiscountCardDto add(DiscountCardDto discountCardDto) {
         DiscountCard discountCard = mapper.map(discountCardDto, DiscountCard.class);
+        validator.validate(discountCard);
         repository.add(discountCard);
         return mapper.map(discountCard, DiscountCardDto.class);
     }
@@ -48,6 +51,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         if (updateDto.getDiscount() != null) {
             card.setDiscount(updateDto.getDiscount());
         }
+        validator.validate(card);
         repository.update(card);
         return mapper.map(card, DiscountCardDto.class);
     }
@@ -56,6 +60,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     @Transactional
     public PutResult put(DiscountCardDto newItem) {
         DiscountCard newCard = mapper.map(newItem, DiscountCard.class);
+        validator.validate(newCard);
         try {
             repository.get(newCard.getNumber());
             repository.update(newCard);

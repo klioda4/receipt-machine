@@ -15,6 +15,7 @@ import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.CallsLog;
 import ru.clevertec.kli.receiptmachine.util.aop.annotation.Transactional;
 import ru.clevertec.kli.receiptmachine.util.enums.PutResult;
+import ru.clevertec.kli.receiptmachine.util.validate.Validator;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
 
     private final Repository<Product> repository;
     private final ModelMapperExt mapper;
+    private final Validator<Product> validator;
 
     @Override
     public List<ProductDto> getAll() {
@@ -37,6 +39,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     @CallsLog
     public ProductDto add(ProductDto productDto) {
         Product product = mapper.map(productDto, Product.class);
+        validator.validate(product);
         repository.add(product);
         return mapper.map(product, ProductDto.class);
     }
@@ -54,6 +57,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     public ProductDto update(int id, ProductUpdateDto updateDto) throws NoSuchElementException {
         Product product = repository.get(id);
         updateFields(product, updateDto);
+        validator.validate(product);
         repository.update(product);
         return mapper.map(product, ProductDto.class);
     }
@@ -62,6 +66,7 @@ public class ProductServiceImpl implements ProductService, ProductInnerService {
     @Transactional
     public PutResult put(ProductDto newItem) {
         Product newProduct = mapper.map(newItem, Product.class);
+        validator.validate(newProduct);
         try {
             repository.get(newProduct.getId());
             repository.update(newProduct);

@@ -1,5 +1,13 @@
 package ru.clevertec.kli.receiptmachine.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +19,9 @@ import ru.clevertec.kli.receiptmachine.pojo.dto.DiscountCardDto;
 import ru.clevertec.kli.receiptmachine.pojo.entity.DiscountCard;
 import ru.clevertec.kli.receiptmachine.repository.Repository;
 import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import ru.clevertec.kli.receiptmachine.util.parse.regex.DiscountCardParser;
+import ru.clevertec.kli.receiptmachine.util.serialize.strings.impl.DiscountCardStringConverter;
+import ru.clevertec.kli.receiptmachine.util.validate.impl.ValidatorImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class DiscountCardServiceImplTest {
@@ -28,7 +35,8 @@ public class DiscountCardServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        testingService = new DiscountCardServiceImpl(repository, new ModelMapperExt());
+        testingService = new DiscountCardServiceImpl(repository, new ModelMapperExt(),
+            new ValidatorImpl<>(new DiscountCardStringConverter(), new DiscountCardParser()));
         cards = makeDiscountCardList();
     }
 

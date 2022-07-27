@@ -3,7 +3,7 @@ package ru.clevertec.kli.receiptmachine.exception;
 import lombok.Getter;
 
 @Getter
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
 
     private final String inputString;
 

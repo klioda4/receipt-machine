@@ -20,6 +20,12 @@ import ru.clevertec.kli.receiptmachine.util.ModelMapperExt;
 import ru.clevertec.kli.receiptmachine.util.database.connection.datasource.DataSource;
 import ru.clevertec.kli.receiptmachine.util.parse.args.OptionalParser;
 import ru.clevertec.kli.receiptmachine.util.parse.args.ParseCartHelper;
+import ru.clevertec.kli.receiptmachine.util.parse.regex.DiscountCardParser;
+import ru.clevertec.kli.receiptmachine.util.parse.regex.ProductParser;
+import ru.clevertec.kli.receiptmachine.util.serialize.strings.impl.DiscountCardStringConverter;
+import ru.clevertec.kli.receiptmachine.util.serialize.strings.impl.ProductStringConverter;
+import ru.clevertec.kli.receiptmachine.util.validate.Validator;
+import ru.clevertec.kli.receiptmachine.util.validate.impl.ValidatorImpl;
 
 @Configuration
 @EnableWebMvc
@@ -48,6 +54,16 @@ public class AppConfig {
         OptionalParser<CardDto> cardParser) {
 
         return new ParseCartHelper(purchaseParser, cardParser);
+    }
+
+    @Bean
+    public Validator<Product> productValidator() {
+        return new ValidatorImpl<>(new ProductStringConverter(), new ProductParser());
+    }
+
+    @Bean
+    public Validator<DiscountCard> discountCardValidator() {
+        return new ValidatorImpl<>(new DiscountCardStringConverter(), new DiscountCardParser());
     }
 
     @Bean
